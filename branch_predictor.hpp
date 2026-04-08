@@ -1,3 +1,4 @@
+#include "predictors/two_level.hpp"
 #include "predictors/always_taken.hpp"
 #include "predictors/bimodal.hpp"
 #include "predictors/gshare.hpp"
