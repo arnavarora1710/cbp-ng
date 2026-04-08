@@ -3,12 +3,6 @@
 
 using namespace hcm;
 
-//   - PHT: indexed by hashed PC, stores HISTORY_LEN bits of local history
-//   - BHT: indexed directly by that local history, stores 2-bit counters
-
-// Knobs:
-//   - PHT_LOG: log2(PHT entries)
-//   - HISTORY_LEN: local history length (also implies BHT has 2^HISTORY_LEN entries)
 template <u64 PHT_LOG = 6, u64 HISTORY_LEN = 4>
 struct two_level : predictor {
     ram<val<HISTORY_LEN>, (1ull << PHT_LOG)> pattern_table;
