@@ -3,15 +3,21 @@
 
 using namespace hcm;
 
-template <class = void>
+//   - PHT: indexed by hashed PC, stores HISTORY_LEN bits of local history
+//   - BHT: indexed directly by that local history, stores 2-bit counters
+
+// Knobs:
+//   - PHT_LOG: log2(PHT entries)
+//   - HISTORY_LEN: local history length (also implies BHT has 2^HISTORY_LEN entries)
+template <u64 PHT_LOG = 6, u64 HISTORY_LEN = 4>
 struct two_level : predictor {
-    ram<val<4>, 64> pattern_table;
-    ram<val<2>, 16> branch_hist_table;
+    ram<val<HISTORY_LEN>, (1ull << PHT_LOG)> pattern_table;
+    ram<val<2>, (1ull << HISTORY_LEN)> branch_hist_table;
     reg<2> counter;
 
     val<1> predict(val<64> inst_pc) {
-        val<6> index = (inst_pc >> 6).make_array(val<6>{}).fold_xor();
-        val<4> pattern = pattern_table.read(index);
+        val<PHT_LOG> index = (inst_pc >> 6).make_array(val<PHT_LOG>{}).fold_xor();
+        val<HISTORY_LEN> pattern = pattern_table.read(index);
         need_extra_cycle(1);
         counter = branch_hist_table.read(pattern);
         return counter >> 1;
@@ -36,10 +42,10 @@ struct two_level : predictor {
         val<2> new_counter = update_counter(counter, taken);
         val<1> is_update_needed = val<1>{new_counter != counter};
 
-        val<6> index = (branch_pc >> 6).make_array(val<6>{}).fold_xor();
+        val<PHT_LOG> index = (branch_pc >> 6).make_array(val<PHT_LOG>{}).fold_xor();
 
         need_extra_cycle(1);
-        val<4> pattern = pattern_table.read(index);
+        val<HISTORY_LEN> pattern = pattern_table.read(index);
 
         need_extra_cycle(is_update_needed);
 
