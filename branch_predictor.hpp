@@ -1,3 +1,5 @@
+// #include "predictors/global_pred.hpp"
+#include "predictors/tournament.hpp"
 #include "predictors/two_level.hpp"
 #include "predictors/always_taken.hpp"
 #include "predictors/bimodal.hpp"
