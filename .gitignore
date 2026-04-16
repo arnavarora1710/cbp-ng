@@ -1,1 +1,4 @@
 cbp
+gcc_test.out
+trace_out/
+trace_cbp/
