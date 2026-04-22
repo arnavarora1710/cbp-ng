@@ -10,6 +10,20 @@
 using namespace hcm;
 
 template<u64 LOGLB=6, u64 NUMG=8, u64 LOGG=11, u64 LOGB=12, u64 TAGW=11, u64 GHIST=100, u64 LOGP1=14, u64 GHIST1=6>
+/*
+LOGLB -> block size of instructions
+
+LOGG -> Entries per tagged table
+LOGB -> Entries in bimodal table 
+
+NUMG -> Number of tagged global-history tables in TAGE
+
+TAGW -> total tag width stored in each tagged entry (Slot Offset Bits + hashed tag bits)
+GHIST -> Max Global history length used by geometric folding logic 
+
+LOGP1-> entries for P1(GShare)
+GHIST1 -> History for P1 gshare
+*/
 struct tage : predictor {
     // provides 2^(LOGLB-2) predictions per cycle
     // P2 is a TAGE, P1 is a gshare
