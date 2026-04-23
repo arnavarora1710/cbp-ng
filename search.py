@@ -3,14 +3,14 @@ import subprocess
 from pathlib import Path
 
 SPACE = {
-    "LOGLB":  [6, 7],
-    "NUMG":   [20, 24, 28], 
-    "LOGG":   list(range(16, 23)), 
-    "LOGB":   list(range(16, 23)), 
-    "TAGW":   list(range(16, 22)),  
-    "GHIST":  [1000, 2000, 4000], 
-    "LOGP1":  list(range(16, 23)),  
-    "GHIST1": list(range(12, 28)), 
+    "LOGLB":  [6],
+    "NUMG":   [8, 10, 12],
+    "GHIST":  [384, 512, 640],
+    "LOGG":   [13, 14, 15],
+    "LOGB":   [12, 13, 14],
+    "TAGW":   [15, 16, 17],
+    "LOGP1":  [16, 17, 18],
+    "GHIST1": [4, 6, 8],
 }
 
 PARAM_ORDER = [
@@ -34,8 +34,8 @@ PARAM_GROUPS = [
 
 
 RANDOM_SEED = 42
-POPULATION_SIZE = 12  
-MAX_GENERATIONS = 8 
+POPULATION_SIZE = 20 
+MAX_GENERATIONS = 12
 ELITE_FRAC = 0.25
 MUTATION_RATE = 0.70
 RANDOM_INJECTION_FRAC = 0.12
@@ -281,8 +281,6 @@ def local_search(best_candidate, max_iterations=LOCAL_SEARCH_ITERS):
                     variant_score = fitness(variant)
 
                     if variant_score > current_score:
-                        print(f"  Improvement: {current_score:.8f} -> {variant_score:.8f}")
-                        print(f"    {key}: {current_val} -> {values[new_idx]}")
                         current_best = variant
                         current_score = variant_score
                         improved = True
@@ -299,7 +297,7 @@ def local_search(best_candidate, max_iterations=LOCAL_SEARCH_ITERS):
     return current_best, current_score
 
 def main():
-    print(f"Using random seed: {RANDOM_SEED}")
+    print(f"random seed: {RANDOM_SEED}")
     population = generate_initial_population()
 
     if not population:
@@ -335,13 +333,12 @@ def main():
 
         population = build_next_generation(population)
 
-    print("\n[GA RESULT]")
     print(f"Best GA accuracy: {best_score:.8f}")
     print(f"Best GA parameters: {best_candidate}")
 
     best_candidate, best_score = local_search(best_candidate)
 
-    print("\n>>> FINAL RESULT <<<")
+    print("\nFINAL RESULT")
     print(f"Final accuracy: {best_score:.8f}")
     print(f"Final parameters: {best_candidate}")
 
